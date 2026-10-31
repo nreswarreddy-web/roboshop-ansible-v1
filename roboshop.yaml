@@ -24,7 +24,8 @@
  #   debug:
  #    msg: "{{ec2_output}}"
 
-  - name: create R53 record 
+  - name: create R53 record
+    amazon.aws.route53:
     state: present 
     zone: "{{ domain_name }}"
     record: "{{ item.item }}.{{domain_name}}" # mongodb.daw92ss.store
