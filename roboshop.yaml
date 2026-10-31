@@ -24,7 +24,7 @@
  #   debug:
  #    msg: "{{ec2_output}}"
 
-  - name: crate R53 record 
+  - name: create R53 record 
     state: present 
     zone: "{{domain_name}}"
     record: "{{ item.item }}.{{domain_name}}" # mongodb.daw92ss.store
