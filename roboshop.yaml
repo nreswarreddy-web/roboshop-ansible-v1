@@ -20,6 +20,17 @@
     loop: "{{ instances }}"
     when: action ==  "create"
     register: ec2_output
-  - name: print ec2 creation output
-    debug:
-     msg: "{{ec2_output}}"
+ # - name: print ec2 creation output
+ #   debug:
+ #    msg: "{{ec2_output}}"
+
+  - name: crate R53 record 
+    state: present 
+    zone: "{{domain_name}}"
+    record: "{{ item.item }}.{{domain_name}}" # mongodb.daw92ss.store
+    type: A 
+    ttl: 1
+    value: "{{ item.instance[0].private_ip_address }}"
+    overwrite: true
+    loop: "{{ ec2_output.results }}"
+    when: action == "create"
