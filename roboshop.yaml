@@ -26,7 +26,7 @@
 
   - name: create R53 record 
     state: present 
-    zone: "{{domain_name}}"
+    zone: "{{ domain_name }}"
     record: "{{ item.item }}.{{domain_name}}" # mongodb.daw92ss.store
     type: A 
     ttl: 1
