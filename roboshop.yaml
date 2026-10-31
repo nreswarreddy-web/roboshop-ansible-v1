@@ -40,19 +40,19 @@
     amazon.aws.route53:
       state: absent
       zone: "{{ domain_name }}"
-      record: "{{ item.item }}.{{domain_name}}"  # mongodb.daw92ss.store
+      record: "{{ item }}.{{domain_name}}"  # mongodb.daw92ss.store
       ttl: 1
-    loop: "{{ instance }}"
-    when: action == " delete "
+    loop: "{{ instances }}"
+    when: action == "delete"
 
   - name: delete then instance 
-    amazon.aws.route53:
+    amazon.aws.ec2_instance:
       state: absent
       name: "roboshop-{{ item }}"
       region: us-east-1
       wait: false
-    loop: "{{ instance }}"
-    when: action == " delete "
+    loop: "{{ instances }}"
+    when: action == "delete"
 
     
 
