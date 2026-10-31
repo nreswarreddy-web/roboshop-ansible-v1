@@ -48,7 +48,7 @@
   - name: delete then instance 
     amazon.aws.ec2_instance:
       state: absent
-      name: "roboshop-{{ item }}"
+      name: "roboshop_{{ item }}"
       region: us-east-1
       wait: false
     loop: "{{ instances }}"
