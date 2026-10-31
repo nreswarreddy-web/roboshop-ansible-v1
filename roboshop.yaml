@@ -1,5 +1,5 @@
 - name: create instance and s53
-  hosts: local
+  hosts: localhost
   connection: local
   vars:
     instances: ["mongodb" ,"redis", "mysql", "rabbitmq"]
