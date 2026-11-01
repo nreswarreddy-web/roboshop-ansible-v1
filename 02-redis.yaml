@@ -10,3 +10,28 @@
      name: redis
      state: present
   
+  - name: allow remote connections
+    replace:
+     path: /etc/redis/redis.conf
+     regexp: '127.0.0.1'
+     replace: '0.0.0.0'
+
+  - name: disabled proteced modeule
+    linefile:
+     path: /etc/redis/redis.conf
+     regexp: '^#?protected-mode yes'
+     replace: '^#?protected-mode no'
+
+  - name: start and enable the sever
+    service:
+      name: redis
+      state: started
+      enabled: yes
+  
+  - name: restart the sever
+    service:
+      name: redis
+      state: restarted
+      enabled: yes
+  
+
