@@ -18,3 +18,23 @@
       system: true
       shell: /sbin/nologin 
       comment: "roboshop system user"
+
+  - name: remove exite app directory
+    file:
+     path: /app
+     state: absent
+  
+  - name: remove catalogue.zip
+    file:
+     path: /tmp/catalogue.zip
+     state: absent
+ 
+  - name: crete app directory
+    file: 
+    path: /app
+    state: directory
+
+  - name: download the files
+    get_url:
+     url:  https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/catalogue-v4.zip
+     dest: /tmp/catalogue.zip
