@@ -8,8 +8,7 @@
       dest: /etc/yum.repos.d/rabbitmq.repo
 
   - name: install rabbit mq
-    package: 
-     dnf:
+    dnf:
       name:
       - erlang 
       - rabbitmq-server
