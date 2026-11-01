@@ -31,8 +31,8 @@
  
   - name: crete app directory
     file: 
-    path: /app
-    state: directory
+     path: /app
+     state: directory
 
   - name: download the files
     get_url:
