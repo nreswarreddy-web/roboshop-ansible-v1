@@ -17,7 +17,7 @@
      replace: '0.0.0.0'
 
   - name: disabled proteced modeule
-    linefile:
+    lineinfile:
      path: /etc/redis/redis.conf
      regexp: '^#?protected-mode yes'
      replace: '^#?protected-mode no'
