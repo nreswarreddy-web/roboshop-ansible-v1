@@ -71,3 +71,18 @@
   - name: print product count
     debug:
      msg: "{{ product_count }}"
+
+ # how to change from string to number 
+  - name: 
+    shell: mongosh --host "{{ mongodb_host }}"/app/db/master-data.js
+    when: product_count.stdout | int == 0
+
+  - name: demon load
+    systemd_service:
+     daemon_reload: true
+
+  - name: start and enable catalogue
+    service:
+     name: Catalogue
+     state: restarted
+     enabled: yes 
