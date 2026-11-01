@@ -19,8 +19,8 @@
   - name: disabled proteced modeule
     lineinfile:
      path: /etc/redis/redis.conf
-     regexp: '^#?protected-mode yes'
-     line: '^#?protected-mode no'
+     regexp: '^protected-mode yes'
+     line: 'protected-mode no'
 
 
   
