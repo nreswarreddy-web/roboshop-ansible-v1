@@ -41,6 +41,7 @@
       state: absent
       zone: "{{ domain_name }}"
       record: "{{ item }}.{{domain_name}}"  # mongodb.daw92ss.store
+      type: A 
       ttl: 1
     loop: "{{ instances }}"
     when: action == "delete"
