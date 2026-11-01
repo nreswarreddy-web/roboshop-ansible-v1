@@ -1,7 +1,7 @@
 - name: working on Catalogue
   hosts: Catalogue
   become: yes
-  task:
+  tasks:
   - name: disable node js 
     command: dnf module disable nodejs -y
   
