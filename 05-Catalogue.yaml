@@ -2,6 +2,9 @@
   hosts: Catalogue
   become: yes
   tasks:
+  - name: reset nodejs module
+    command: dnf module reset nodejs -y
+
   - name: disable node js 
     command: dnf module disable nodejs -y
   
