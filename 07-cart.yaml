@@ -1,0 +1,67 @@
+- name: working on cart
+  hosts: cart
+  become: yes
+  tasks:
+  - name: disable node js 
+    command: dnf module disable nodejs -y
+  
+  - name: enable node js
+    dnf:
+     name: nodejs
+     state: present 
+    
+  - name: creating application cart 
+    user:
+      name: roboshop
+      create_home: false
+      home: /app
+      system: true
+      shell: /sbin/nologin 
+      comment: "roboshop system cart"
+
+  - name: remove exite app directory
+    file:
+     path: /app
+     state: absent
+  
+  - name: remove cart.zip
+    file:
+     path: /tmp/cart.zip
+     state: absent
+ 
+  - name: crete app directory
+    file: 
+     path: /app
+     state: directory
+
+  - name: download the files
+    get_url:
+     url:  https://raw.githubcartcontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/cart-v4.zip
+     dest: /tmp/cart.zip
+
+  - name: unzip cart
+    unarchive:
+      src: /tmp/cart.zip
+      dest: /app
+      remote_src: yes 
+
+  - name: Install bottle python package
+    community.general.npm:
+      path: /app
+
+  - name: copy cart services 
+    template:
+     src: cart.service.j2
+     dest: /etc/systemd/system/cart.service
+
+
+
+  - name: demon load
+    systemd_service:
+     daemon_reload: true
+
+  - name: start and enable cart
+    service:
+     name: cart
+     state: restarted
+     enabled: yes 
