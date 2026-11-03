@@ -2,7 +2,7 @@ ansible_user: ec2-user
 ansible_password: DevOps321
 mongodb_host: mongodb.daw92ss.store
 redis_host: redis.daw92ss.store
-Catalogue_host: Catalogue.daw92ss.store
+Catalogue_host: catalogue.daw92ss.store
 mysql_host: mysql.daw92ss.store
 user_host: user.daw92ss.store
 cart_host: cart.daw92ss.store
