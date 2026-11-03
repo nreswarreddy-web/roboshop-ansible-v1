@@ -1,9 +1,15 @@
 - name: working on cart
-  hosts: catalogue
+  hosts: cart
   become: yes
   tasks:
+  - name: reset nodejs module
+    command: dnf module reset nodejs -y
+
   - name: disable node js 
     command: dnf module disable nodejs -y
+  
+  - name: enable nodejs 24 module
+    command: dnf module enable nodejs:24 -y
   
   - name: enable node js
     dnf:
@@ -37,7 +43,7 @@
   - name: download the files
     get_url:
      url:  https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/cart-v4.zip
-     dest: /tmp/cart.zip
+    dest: /tmp/cart.zip
 
   - name: unzip cart
     unarchive:
@@ -45,27 +51,23 @@
       dest: /app
       remote_src: yes 
 
-  # - name: Install bottle python package
-  #   community.general.npm:
-  #     path: /app
+  - name: Install bottle python package
+    community.general.npm:
+      path: /app
 
-  - name: npm istall 
-    command: /app/npm install
-
-
-  # - name: copy cart services 
-  #   template:
-  #    src: cart.service.j2
-  #    dest: /etc/systemd/system/cart.service
+  - name: copy cart services 
+    template:
+     src: cart.service.j2
+     dest: /etc/systemd/system/cart.service
 
 
 
-  # - name: demon load
-  #   systemd_service:
-  #    daemon_reload: true
+  - name: demon load
+    systemd_service:
+     daemon_reload: true
 
-  # - name: start and enable cart
-  #   service:
-  #    name: cart
-  #    state: restarted
-  #    enabled: yes 
+  - name: start and enable cart
+    service:
+     name: cart
+     state: restarted
+     enabled: yes 
