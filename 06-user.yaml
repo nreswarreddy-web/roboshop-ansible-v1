@@ -51,9 +51,9 @@
       dest: /app
       remote_src: yes 
 
-#  # - name: Install bottle python package
-#  #   community.general.npm:
-#  #     path: /app
+  - name: Install bottle python package
+    community.general.npm:
+      path: /app
 #   - name: Install node modules
 #     command: npm install
 #     args:
