@@ -1,0 +1,16 @@
+- name: configure shipping sever
+  hosts: shipping
+  become: yes
+  tasks:
+  - name: enable maven 3.9
+    command: dnf module enable maven:3.9 -y
+  
+  - name: install maven
+    dnf:
+     name:
+    - maven 
+    - java-25-openjdk-devel
+    state: present
+
+  - name: find java25 path
+    shell: 
