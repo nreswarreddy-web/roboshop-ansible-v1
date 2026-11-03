@@ -8,8 +8,8 @@
   - name: install maven
     dnf:
      name:
-    - maven 
-    - java-25-openjdk-devel
+     - maven 
+     - java-25-openjdk-devel
     state: present
 
   - name: find java25 path
