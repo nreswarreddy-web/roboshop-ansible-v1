@@ -35,7 +35,7 @@
       shell: /sbin/nologin 
       comment: "roboshop system user"
 
-  - name: remove exite app directory
+  - name: remove existing  app directory
     file:
       path: /app
       state: absent
@@ -69,7 +69,7 @@
 
   - name: print the mvn version without java_home
     debug:
-     msg: "{{ mvn_default.stdout.lines }}"
+     msg: "{{ mvn_default.stdout_lines }}"
 
   - name: build shipping
     command: mvn clean package
@@ -92,12 +92,12 @@
 
 
   - name: load cities data into mysql
-    shell: mysql -h "{{ mysql.daw92ss.store }}" -uroot -p{{ mysql_root_password }} < /app/db/master-data.sql
-    when: cities_count_rc !=0 or cities_count.stdout | int == 0
+    shell: mysql -h "{{ mysql_host }}" -uroot -p{{ mysql_root_password }} < /app/db/master-data.sql
+    when: cities_count.rc !=0 or cities_count.stdout | int == 0
 
 
   - name: create a app user in the sql
-    shell: mysql -h "{{ mysql.daw92ss.store }}" -uroot -p{{ mysql_root_password }} < /app/db/app-user.sql
+    shell: mysql -h "{{ mysql_host}}" -uroot -p{{ mysql_root_password }} < /app/db/app-user.sql
 
   - name: 
     template:
