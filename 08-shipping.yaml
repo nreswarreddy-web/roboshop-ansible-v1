@@ -11,7 +11,7 @@
       - maven 
       - java-25-openjdk-devel
       - maven-openjdk25
-      - mysql
+      - mysql  # install mysql 
       state: present
      
 
@@ -60,3 +60,59 @@
       src: /tmp/shipping.zip
       dest: /app
       remote_src: yes 
+
+  - name: mvn version without java_home
+    command: mvn --version
+    args:
+     chdir: /app
+    register: mvn_default
+
+  - name: print the mvn version without java_home
+    debug:
+     msg: "{{ mvn_default.stdout.lines }}"
+
+  - name: build shipping
+    command: mvn clean package
+    args:
+     chdir: /app
+  
+  - name: move shipping jar files
+    command: mv target/shipping.jar shipping.jar
+    args:
+     chdir: /app
+
+  - name:  check cities data exist or not
+    command: mysql -h "{{ mysql_host }}" -u root -p{{ mysql_root_password }} -N -B -e "SELECT COUNT(*) FROM cities.cities;"
+    register: cities_count
+    ignore_errors: true
+  
+  - name: print cities count
+    debug:
+     msg: "{{ cities_count }}"
+
+
+  - name: load cities data into mysql
+    shell: mysql -h "{{ mysql.daw92ss.store }}" -uroot -p{{ mysql_root_password }} < /app/db/master-data.sql
+    when: cities_count_rc !=0 or cities_count.stdout | int == 0
+
+
+  - name: create a app user in the sql
+    shell: mysql -h "{{ mysql.daw92ss.store }}" -uroot -p{{ mysql_root_password }} < /app/db/app-user.sql
+
+  - name: 
+    template:
+     src: shipping.service.j2
+     dest: /etc/systemd/system/shipping.service
+
+  
+  - name: demon load
+    systemd_service:
+     daemon_reload: true
+
+  - name: start and enable shipping
+    service:
+     name: shipping
+     state: restarted
+     enabled: yes
+  
+

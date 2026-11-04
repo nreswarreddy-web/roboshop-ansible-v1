@@ -8,3 +8,6 @@ user_host: user.daw92ss.store
 cart_host: cart.daw92ss.store
 rabbitmq_host: rabbitmq.daw92ss.store
 shipping_host: shipping.daw92ss.store
+mysql_root_password: RoboShop@1
+shipping_db_user: shipping
+shipping_db_password: RoboShop@1
