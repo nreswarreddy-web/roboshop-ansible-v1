@@ -37,11 +37,11 @@
   - name: download the front end application
     get_url:
      url:  https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/frontend-v4.zip
-     dest: /tmp/roboshop.conf.zip
+     dest: /tmp/frontend.zip
 
-  - name: unzip frontend conf
+  - name: unzip frontend 
     unarchive:
-      src: /tmp/roboshop.conf.zip
+      src: /tmp/frontend.zip
       dest: /usr/share/nginx/html/
       remote_src: yes 
 
