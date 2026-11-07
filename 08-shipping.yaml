@@ -1,127 +1,118 @@
-- name: configure shipping server
+- name: configure shipping sever
   hosts: shipping
   become: yes
   tasks:
   - name: enable maven 3.9
     command: dnf module enable maven:3.9 -y
-
-  - name: install maven and java25
+  
+  - name: install maven
     dnf:
       name:
-      - maven
+      - maven 
       - java-25-openjdk-devel
-      - maven-openjdk25 # installing this so that we no need to set JAVA_HOME again
-      - mysql
+      - maven-openjdk25
+      - mysql  # install mysql 
       state: present
+     
 
-  # - name: find java25 path
-  #   shell: readlink -f $(ls /usr/lib/jvm/java-25-openjdk*/bin/java | head -1)
-  #   register: java25
+ # - name: find java25 path
+ #   shell: readlink -f $(ls /usr/lib/jvm/java-25-openjdk/bin/java | head -1)
+ #   register: java25
 
-  # - name: print the output
-  #   debug:
-  #     msg: "{{ java25 }}"
+#  - name: print the output
+#    debug: 
+#     msg: "{{ java25 }}"
 
-  # - name: make java25 as default
-  #   command: alternatives --set java {{ java25.stdout }}
+#  - name: make java25 as default
+#    command: alternatives --config java "{{ java25 }}"
 
-  # - name: set JAVA_HOME
-  #   copy:
-  #     content: "export JAVA_HOME={{ java25.stdout | dirname | dirname  }}"
-  #     dest: /etc/profile.d/java.sh
-
-  - name: create roboshop system user
+  - name: creating application user 
     user:
       name: roboshop
       create_home: false
       home: /app
       system: true
-      shell: /sbin/nologin
+      shell: /sbin/nologin 
       comment: "roboshop system user"
 
-  - name: remove existing app directory
+  - name: remove existing  app directory
     file:
       path: /app
       state: absent
-
+  
   - name: remove shipping.zip
     file:
-      path: /tmp/shipping.zip
-      state: absent
+     path: /tmp/shipping.zip
+     state: absent
+ 
+  - name: crete app directory
+    file: 
+     path: /app
+     state: directory
 
-  - name: create app directory
-    file:
-      path: /app
-      state: directory
-
-  - name: download shipping application
+  - name: download the files
     get_url:
-      url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/shipping-v4.zip
-      dest: /tmp/shipping.zip
+     url:  https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/shipping-v4.zip
+     dest: /tmp/shipping.zip
 
   - name: unzip shipping
     unarchive:
       src: /tmp/shipping.zip
       dest: /app
-      remote_src: yes
+      remote_src: yes 
 
-  - name: mvn version without JAVA_HOME
+  - name: mvn version without java_home
     command: mvn --version
     args:
-      chdir: /app
+     chdir: /app
     register: mvn_default
 
-  - name: print mvn version without JAVA_HOME
+  - name: print the mvn version without java_home
     debug:
-      msg: "{{ mvn_default.stdout_lines }}"
+     msg: "{{ mvn_default.stdout_lines }}"
 
   - name: build shipping
     command: mvn clean package
     args:
      chdir: /app
-    # environment:
-    #   JAVA_HOME: "{{ java25.stdout | dirname | dirname  }}"
-
-  - name: move shipping jar file
+  
+  - name: move shipping jar files
     command: mv target/shipping.jar shipping.jar
     args:
      chdir: /app
 
-  - name: check cities data exist or not
+  - name:  check cities data exist or not
     command: mysql -h "{{ mysql_host }}" -u root -p{{ mysql_root_password }} -N -B -e "SELECT COUNT(*) FROM cities.cities;"
     register: cities_count
     ignore_errors: true
-    tags:
-    - mysql
-
-  - name: print cities_count
+  
+  - name: print cities count
     debug:
-      msg: "{{ cities_count }}"
-    tags:
-    - mysql
+     msg: "{{ cities_count }}"
+
 
   - name: load cities data into mysql
-    shell: mysql -h "{{ mysql_host }}" -u root -p{{ mysql_root_password }} < /app/db/master-data.sql
-    when: cities_count.rc != 0 or cities_count.stdout | int == 0
-    tags:
-    - mysql
+    shell: mysql -h "{{ mysql_host }}" -uroot -p{{ mysql_root_password }} < /app/db/master-data.sql
+    when: cities_count.rc !=0 or cities_count.stdout | int == 0
 
-  - name: create app user in mysql
-    shell: mysql -h "{{ mysql_host }}" -u root -p{{ mysql_root_password }} < /app/db/app-user.sql
-    tags:
-    - mysql
+
+  - name: create a app user in the sql
+    shell: mysql -h "{{ mysql_host}}" -uroot -p{{ mysql_root_password }} < /app/db/app-user.sql
 
   - name: copy shipping service
     template:
-      src: shipping.service.j2
-      dest: /etc/systemd/system/shipping.service
+     src: shipping.service.j2
+     dest: /etc/systemd/system/shipping.service
 
-  - name: daemon reload
+  
+  - name: demon load
     systemd_service:
-      daemon_reload: true
+     daemon_reload: true
 
   - name: start and enable shipping
     service:
-      name: shipping
-      state: restarted
-      enabled: yes
+     name: shipping
+     state: restarted
+     enabled: yes
+  
+
