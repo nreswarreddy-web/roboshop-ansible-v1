@@ -19,7 +19,7 @@
  #   shell: readlink -f $(ls /usr/lib/jvm/java-25-openjdk/bin/java | head -1)
  #   register: java25
 
-#- name: print the output
+#  - name: print the output
 #    debug: 
 #     msg: "{{ java25 }}"
 
@@ -99,7 +99,7 @@
   - name: create a app user in the sql
     shell: mysql -h "{{ mysql_host}}" -uroot -p{{ mysql_root_password }} < /app/db/app-user.sql
 
-  - name: 
+  - name: copy shipping service
     template:
      src: shipping.service.j2
      dest: /etc/systemd/system/shipping.service
