@@ -39,7 +39,7 @@
      url:  https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/frontend-v4.zip
      dest: /tmp/roboshop.conf.zip
 
-  - name: unzip roboshop conf
+  - name: unzip frontend conf
     unarchive:
       src: /tmp/roboshop.conf.zip
       dest: /usr/share/nginx/html/
