@@ -2,7 +2,7 @@
   hosts: localhost
   connection: local
   vars:
-    instances: ["mongodb" ,"redis", "mysql", "rabbitmq", "shipping" ,"Catalogue", "user", "cart" , "payment"]
+    instances: ["mongodb" ,"redis", "mysql", "rabbitmq", "shipping" ,"Catalogue", "user", "cart" , "payment" , "frontend"]
     action: create
     domain_name: daw92ss.store
     ami_id: ami-0055977a6e828a4f4
@@ -36,7 +36,31 @@
     loop: "{{ ec2_output.results }}"
     when: action == "create"
 
-  - name: delete R53 records
+
+  - name: create R53 record for front end 
+    amazon.aws.route53:
+     state: present 
+     zone: "{{ domain_name }}"
+     record: "{{ domain_name }}" # daw92ss.store points to store frontend public ip 
+     type: A 
+     ttl: 1
+     value: "{{ item.instances[0].public_ip_address }}"
+     overwrite: true
+    loop: "{{ ec2_output.results }}"
+    when: action == "create" and item.item == "frontend"
+
+
+  - name: delete R53 records for front end 
+    amazon.aws.route53:
+      state: absent
+      zone: "{{ domain_name }}"
+      record: "{{ domain_name }}"  # daw92ss.store deleting for fornt end 
+      type: A 
+      ttl: 1
+    loop: "{{ instances }}"
+    when: action == "delete" and item.item == "frontend"
+ 
+    - name: delete R53 records
     amazon.aws.route53:
       state: absent
       zone: "{{ domain_name }}"
@@ -45,6 +69,7 @@
       ttl: 1
     loop: "{{ instances }}"
     when: action == "delete"
+
 
   - name: delete then instance 
     amazon.aws.ec2_instance:
