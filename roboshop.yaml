@@ -57,6 +57,8 @@
       record: "{{ domain_name }}"  # daw92ss.store deleting for fornt end 
       type: A 
       ttl: 1
+      value: "{{ item.instances[0].public_ip_address }}"
+      overwrite: true
     loop: "{{ instances }}"
     when: action == "delete" and item.item == "frontend"
  
