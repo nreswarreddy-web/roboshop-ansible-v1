@@ -50,27 +50,25 @@
     when: action == "create" and item.item == "frontend"
 
 
-  - name: delete R53 records for front end 
-    amazon.aws.route53:
-      state: absent
-      zone: "{{ domain_name }}"
-      record: "{{ domain_name }}"  # daw92ss.store deleting for fornt end 
-      type: A 
-      ttl: 1
-      value: "{{ item.instances[0].public_ip_address }}"
-      overwrite: true
-    loop: "{{ instances }}"
-    when: action == "delete" and item.item == "frontend"
- 
   - name: delete R53 records
     amazon.aws.route53:
       state: absent
       zone: "{{ domain_name }}"
-      record: "{{ item }}.{{domain_name}}"  # mongodb.daw92ss.store
-      type: A 
+      record: "{{ item }}.{{ domain_name }}"
       ttl: 1
+      type: A
     loop: "{{ instances }}"
     when: action == "delete"
+
+  - name: delete R53 record for frontend
+    amazon.aws.route53:
+      state: absent
+      zone: "{{ domain_name }}"
+      record: "{{ domain_name }}"
+      ttl: 1
+      type: A
+    when: action == "delete" 
+
 
 
   - name: delete then instance 
